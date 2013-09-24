@@ -2,6 +2,10 @@ Revision history for Dancer-Plugin-Queue-MongoDB
 
 {{$NEXT}}
 
+    - Updated to require MongoDBx::Queue version 1.000, which is fork-safe
+      and has a different API.  Our API has not changed, however, and the
+      guts are slightly simpler. :-)
+
 0.002     2013-01-24 16:51:17 America/New_York
 
     - Updated to use new MongoDB::MongoClient class instead of

@@ -8,9 +8,9 @@ package Dancer::Plugin::Queue::MongoDB;
 
 # Dependencies
 use Moose;
-use MongoDB;
-use MongoDB::MongoClient; # ensure we have a new-enough MongoDB client
-use MongoDBx::Queue;
+use MooseX::AttributeShortcuts;
+use MongoDBx::Queue 1.000; # new API
+use namespace::autoclean;
 
 with 'Dancer::Plugin::Queue::Role::Queue';
 
@@ -60,28 +60,17 @@ other attributes.
 =cut
 
 has queue => (
-  is         => 'ro',
+  is         => 'lazy',
   isa        => 'MongoDBx::Queue',
-  lazy_build => 1,
 );
 
 sub _build_queue {
   my ($self) = @_;
   return MongoDBx::Queue->new(
-    db   => $self->_mongodb_client->get_database( $self->db_name ),
-    name => $self->queue_name,
+    database_name => $self->db_name,
+    collection_name => $self->queue_name,
+    client_options => $self->connection_options,
   );
-}
-
-has _mongodb_client => (
-  is         => 'ro',
-  isa        => 'MongoDB::MongoClient',
-  lazy_build => 1,
-);
-
-sub _build__mongodb_client {
-  my ($self) = @_;
-  return MongoDB::MongoClient->new( $self->connection_options );
 }
 
 sub add_msg {
@@ -99,6 +88,8 @@ sub remove_msg {
   my ( $self, $msg ) = @_;
   $self->queue->remove_task($msg);
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 
