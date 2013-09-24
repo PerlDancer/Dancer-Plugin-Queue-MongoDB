@@ -21,9 +21,9 @@ Name of the database to hold the queue collection. Required.
 =cut
 
 has db_name => (
-  is       => 'ro',
-  isa      => 'Str',
-  required => 1,
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
 );
 
 =attr queue_name
@@ -33,9 +33,9 @@ Name of the collection that defines the queue. Defaults to 'queue'.
 =cut
 
 has queue_name => (
-  is      => 'ro',
-  isa     => 'Str',
-  default => 'queue',
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'queue',
 );
 
 =attr connection_options
@@ -47,9 +47,9 @@ on the default port.
 =cut
 
 has connection_options => (
-  is      => 'ro',
-  isa     => 'HashRef',
-  default => sub { {} },
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => sub { {} },
 );
 
 =attr queue
@@ -60,33 +60,33 @@ other attributes.
 =cut
 
 has queue => (
-  is         => 'lazy',
-  isa        => 'MongoDBx::Queue',
+    is  => 'lazy',
+    isa => 'MongoDBx::Queue',
 );
 
 sub _build_queue {
-  my ($self) = @_;
-  return MongoDBx::Queue->new(
-    database_name => $self->db_name,
-    collection_name => $self->queue_name,
-    client_options => $self->connection_options,
-  );
+    my ($self) = @_;
+    return MongoDBx::Queue->new(
+        database_name   => $self->db_name,
+        collection_name => $self->queue_name,
+        client_options  => $self->connection_options,
+    );
 }
 
 sub add_msg {
-  my ( $self, $data ) = @_;
-  $self->queue->add_task( { data => $data } );
+    my ( $self, $data ) = @_;
+    $self->queue->add_task( { data => $data } );
 }
 
 sub get_msg {
-  my ($self) = @_;
-  my $msg = $self->queue->reserve_task;
-  return ( $msg, $msg->{data} );
+    my ($self) = @_;
+    my $msg = $self->queue->reserve_task;
+    return ( $msg, $msg->{data} );
 }
 
 sub remove_msg {
-  my ( $self, $msg ) = @_;
-  $self->queue->remove_task($msg);
+    my ( $self, $msg ) = @_;
+    $self->queue->remove_task($msg);
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -134,4 +134,4 @@ See documentation for L<Dancer::Plugin::Queue>.
 
 =cut
 
-# vim: ts=2 sts=2 sw=2 et:
+# vim: ts=4 sts=4 sw=4 et:
